@@ -1,10 +1,12 @@
 use clap::Parser;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::ops::RangeInclusive;
 
-//TODO: add a common ports collection, can be found from awk '$2~/tcp$/' /usr/share/nmap/nmap-services | sort -r -k3 | head -n 1000 | tr -s ' ' | cut -d '/' -f1 | sed 's/\S*\s*\(\S*\).*/\1,/'
-const PORT_RANGE: RangeInclusive<usize> = 1..=65535;
+const PORT_RANGE: RangeInclusive<u16> = 1..=65535;
+const COMMON_PORTS_PATH: &str = "common_ports.csv";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -15,6 +17,10 @@ struct Cli {
     /// Ports to scan supplied with a hyphen between them
     #[arg(value_parser = port_in_range)]
     ports: Option<(u16, u16)>,
+
+    /// a flag to use the 1000 most common ports instead of a range
+    #[arg(short, long)]
+    common_ports: bool,
 }
 
 fn port_in_range(s: &str) -> Result<(u16, u16), String> {
@@ -22,6 +28,10 @@ fn port_in_range(s: &str) -> Result<(u16, u16), String> {
         return Err("port range missing hyphen, must be in start-end format, Ex: 1-16".into());
     }
     let (start, end) = s.split_once('-').unwrap();
+
+    if start > end {
+        return Err("ending port number range should be higher than the starting number".into());
+    }
 
     if PORT_RANGE.contains(&start.parse().unwrap()) && PORT_RANGE.contains(&end.parse().unwrap()) {
         Ok((start.parse().unwrap(), end.parse().unwrap()))
@@ -43,7 +53,27 @@ fn main() {
 
     let (start_port, end_port) = cli.ports.unwrap_or((0, 65535));
 
-    for i in start_port..=end_port {
+    let mut ports: Vec<u16> = match cli.common_ports {
+        true => {
+            let mut v = vec![];
+
+            let str = std::fs::read_to_string(COMMON_PORTS_PATH).expect("common ports file path");
+
+            for i in str.split(",\n") {
+                if i.parse::<u16>().is_ok() {
+                    v.push(i.parse().unwrap());
+                }
+            }
+
+            v
+        }
+        false => (start_port..=end_port).collect(),
+    };
+
+    // shuffles port numbers so firewalls blocking sequential port reads shouldn't be an issue
+    ports.shuffle(&mut thread_rng());
+
+    for i in ports {
         if check_port_open(cli.addr, i) {
             hashmap.insert(i, true);
         } else {
@@ -76,4 +106,20 @@ pub fn count_open_ports(hashmap: HashMap<u16, bool>) -> u16 {
     });
 
     open_ports
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_port_count() {
+        let mut hashmap: HashMap<u16, bool> = HashMap::new();
+
+        for i in PORT_RANGE {
+            hashmap.insert(i, true);
+        }
+
+        assert_eq!(count_open_ports(hashmap), PORT_RANGE.max().unwrap())
+    }
 }
