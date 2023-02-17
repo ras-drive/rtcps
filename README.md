@@ -1,7 +1,7 @@
 # What is this app?
 
 This is an attempt at a port scanner written in Rust as a hobby project.
-I though it would be a fun little tool to make while also brushing up on
+I thought it would be a fun little tool to make while also brushing up on
 writing CLI apps now that I have more experience programming.
 
 The common ports collection was acquired by running the following command
@@ -19,7 +19,7 @@ command in the project directory.
 cargo build --release
 ```
 
-Then it can be ran by running
+Then it can be started by running
 
 ```bash
 cargo run -- [ip_address_to_scan]
