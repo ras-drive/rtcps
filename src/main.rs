@@ -2,57 +2,28 @@ use clap::Parser;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use std::collections::HashMap;
-use std::net::{IpAddr, SocketAddr, TcpStream};
-use std::ops::RangeInclusive;
 
-const PORT_RANGE: RangeInclusive<u16> = 1..=65535;
+use crate::cli::Cli;
+use crate::port_scanner::PortScanner;
+
+pub mod cli;
+pub mod port_scanner;
+
 const COMMON_PORTS_PATH: &str = "common_ports.csv";
 
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    /// Addr to scan
-    addr: IpAddr,
-
-    /// Ports to scan supplied with a hyphen between them
-    #[arg(value_parser = port_in_range)]
-    ports: Option<(u16, u16)>,
-
-    /// a flag to use the 1000 most common ports instead of a range
-    #[arg(short, long)]
-    common_ports: bool,
-}
-
-fn port_in_range(s: &str) -> Result<(u16, u16), String> {
-    if s.split_once('-').is_none() {
-        return Err("port range missing hyphen, must be in start-end format, Ex: 1-16".into());
-    }
-    let (start, end) = s.split_once('-').unwrap();
-
-    if start > end {
-        return Err("ending port number range should be higher than the starting number".into());
-    }
-
-    if PORT_RANGE.contains(&start.parse().unwrap()) && PORT_RANGE.contains(&end.parse().unwrap()) {
-        Ok((start.parse().unwrap(), end.parse().unwrap()))
-    } else {
-        Err(format!(
-            "port not in range {}-{}",
-            PORT_RANGE.start(),
-            PORT_RANGE.end()
-        ))
-    }
-}
-
-fn main() {
+#[tokio::main]
+async fn main() {
     let cli = Cli::parse();
 
     println!("Scanning on addr {}", cli.addr);
 
-    let mut hashmap = HashMap::new();
+    // let mut hashmap = HashMap::new();
+    let mut port_scanner = PortScanner::from(&cli);
 
+    // sets ports to supplied ones or defaults to all
     let (start_port, end_port) = cli.ports.unwrap_or((0, 65535));
 
+    // match function for loading the 1000 most common ports
     let mut ports: Vec<u16> = match cli.common_ports {
         true => {
             let mut v = vec![];
@@ -73,27 +44,12 @@ fn main() {
     // shuffles port numbers so firewalls blocking sequential port reads shouldn't be an issue
     ports.shuffle(&mut thread_rng());
 
-    for i in ports {
-        if check_port_open(cli.addr, i) {
-            hashmap.insert(i, true);
-        } else {
-            hashmap.insert(i, false);
-        }
-    }
+    port_scanner.scan_ports(ports).await;
 
-    println!("{} open ports found!", count_open_ports(hashmap));
-}
-
-pub fn check_port_open(addr: IpAddr, port_num: u16) -> bool {
-    let socket_address = SocketAddr::new(addr, port_num);
-
-    match TcpStream::connect(socket_address) {
-        Ok(_) => {
-            println!("port {} open!", port_num);
-            true
-        }
-        Err(_) => false,
-    }
+    println!(
+        "{} open ports found!",
+        count_open_ports(port_scanner.port_map)
+    );
 }
 
 pub fn count_open_ports(hashmap: HashMap<u16, bool>) -> u16 {
@@ -110,6 +66,8 @@ pub fn count_open_ports(hashmap: HashMap<u16, bool>) -> u16 {
 
 #[cfg(test)]
 mod tests {
+    use crate::cli::PORT_RANGE;
+
     use super::*;
 
     #[test]
