@@ -1,6 +1,7 @@
+use dashmap::DashMap;
 use std::{
-    collections::HashMap,
     net::{IpAddr, SocketAddr},
+    sync::Arc,
 };
 use tokio::net::TcpStream;
 
@@ -8,24 +9,21 @@ use crate::cli::Cli;
 
 pub struct PortScanner {
     addr: IpAddr,
-    pub port_map: HashMap<u16, bool>,
+    pub port_map: Arc<DashMap<u16, bool>>,
 }
 
 impl PortScanner {
     pub fn new(address: IpAddr) -> Self {
         Self {
             addr: address,
-            port_map: HashMap::new(),
+            port_map: Arc::new(DashMap::new()),
         }
     }
 
     pub async fn check_port_open(&self, port_num: u16) -> bool {
         let socket_address = SocketAddr::new(self.addr, port_num);
 
-        match tokio::spawn(async move { TcpStream::connect(socket_address).await })
-            .await
-            .unwrap()
-        {
+        match TcpStream::connect(socket_address).await {
             Ok(_) => {
                 println!("port {} open!", port_num);
                 true
@@ -49,7 +47,7 @@ impl From<&Cli> for PortScanner {
     fn from(cli: &Cli) -> Self {
         Self {
             addr: cli.addr,
-            port_map: HashMap::new(),
+            port_map: Arc::new(DashMap::new()),
         }
     }
 }

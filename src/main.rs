@@ -1,7 +1,8 @@
 use clap::Parser;
+use dashmap::DashMap;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use std::collections::HashMap;
+use std::sync::Arc;
 
 use crate::cli::Cli;
 use crate::port_scanner::PortScanner;
@@ -11,7 +12,7 @@ pub mod port_scanner;
 
 const COMMON_PORTS_PATH: &str = "common_ports.csv";
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     let cli = Cli::parse();
 
@@ -48,20 +49,12 @@ async fn main() {
 
     println!(
         "{} open ports found!",
-        count_open_ports(port_scanner.port_map)
+        count_open_ports(&port_scanner.port_map)
     );
 }
 
-pub fn count_open_ports(hashmap: HashMap<u16, bool>) -> u16 {
-    let mut open_ports: u16 = 0;
-
-    hashmap.iter().for_each(|(_i, p)| {
-        if *p {
-            open_ports += 1;
-        }
-    });
-
-    open_ports
+pub fn count_open_ports(hashmap: &Arc<DashMap<u16, bool>>) -> u16 {
+    hashmap.as_ref().into_iter().filter(|x| *x.value()).count() as u16
 }
 
 #[cfg(test)]
@@ -72,12 +65,12 @@ mod tests {
 
     #[test]
     fn test_port_count() {
-        let mut hashmap: HashMap<u16, bool> = HashMap::new();
+        let hashmap = Arc::new(DashMap::new());
 
         for i in PORT_RANGE {
             hashmap.insert(i, true);
         }
 
-        assert_eq!(count_open_ports(hashmap), PORT_RANGE.max().unwrap())
+        assert_eq!(count_open_ports(&hashmap), PORT_RANGE.max().unwrap())
     }
 }
