@@ -1,9 +1,9 @@
 use dashmap::DashMap;
+use smol::net::TcpStream;
 use std::{
     net::{IpAddr, SocketAddr},
     sync::Arc,
 };
-use tokio::net::TcpStream;
 
 use crate::cli::Cli;
 

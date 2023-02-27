@@ -12,7 +12,7 @@ pub mod port_scanner;
 
 const COMMON_PORTS_PATH: &str = "common_ports.csv";
 
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main]
 async fn main() {
     let cli = Cli::parse();
 
@@ -45,7 +45,7 @@ async fn main() {
     // shuffles port numbers so firewalls blocking sequential port reads shouldn't be an issue
     ports.shuffle(&mut thread_rng());
 
-    port_scanner.scan_ports(ports).await;
+    smol::block_on(async { port_scanner.scan_ports(ports).await });
 
     println!(
         "{} open ports found!",
