@@ -38,6 +38,21 @@ If you would only like to scan the top 1000 most common ports you can run
 cargo run -- 127.0.0.1 -c
 ```
 
+## Benchmarking
+
+If you wanna run the benchmark it is backed by Criterion.rs, all you have
+to do is run
+
+```bash
+cargo bench
+```
+
+If you want to generate a flamegraph run
+
+```bash
+cargo bench --bench all_port_bench -- --profile-time=5
+```
+
 ### Licensing
 
 This app is Licensed under the MIT/Apache 2.0 License

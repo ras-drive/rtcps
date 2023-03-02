@@ -1,16 +1,11 @@
 use clap::Parser;
-use dashmap::DashMap;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use std::sync::Arc;
+use rusty_port_scanner::count_open_ports;
 
-use crate::cli::Cli;
-use crate::port_scanner::PortScanner;
-
-pub mod cli;
-pub mod port_scanner;
-
-const COMMON_PORTS_PATH: &str = "common_ports.csv";
+use rusty_port_scanner::cli::Cli;
+use rusty_port_scanner::port_scanner::PortScanner;
+use rusty_port_scanner::COMMON_PORTS_PATH;
 
 #[tokio::main]
 async fn main() {
@@ -51,26 +46,4 @@ async fn main() {
         "{} open ports found!",
         count_open_ports(&port_scanner.port_map)
     );
-}
-
-pub fn count_open_ports(hashmap: &Arc<DashMap<u16, bool>>) -> u16 {
-    hashmap.as_ref().into_iter().filter(|x| *x.value()).count() as u16
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::cli::PORT_RANGE;
-
-    use super::*;
-
-    #[test]
-    fn test_port_count() {
-        let hashmap = Arc::new(DashMap::new());
-
-        for i in PORT_RANGE {
-            hashmap.insert(i, true);
-        }
-
-        assert_eq!(count_open_ports(&hashmap), PORT_RANGE.max().unwrap())
-    }
 }

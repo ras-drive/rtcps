@@ -17,3 +17,21 @@ features = ["macros", "rt-multi-thread", "net"]
 [dependencies.clap]
 version = "4.1.4"
 features = ["derive"]
+
+[dev-dependencies]
+criterion = {version = "0.4", features = ["html_reports", "async_smol"]}
+pprof = { version = "0.11", features = ["flamegraph", "criterion"] }
+
+[lib]
+bench = false
+
+[[bin]]
+name = "rusty_port_scanner"
+bench = false
+
+[[bench]]
+name = "all_port_bench"
+harness = false
+
+[profile.release]
+debug = true

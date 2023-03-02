@@ -7,6 +7,7 @@ use std::{
 
 use crate::cli::Cli;
 
+#[derive(Clone)]
 pub struct PortScanner {
     addr: IpAddr,
     pub port_map: Arc<DashMap<u16, bool>>,
