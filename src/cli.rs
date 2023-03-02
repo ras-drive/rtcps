@@ -17,6 +17,9 @@ pub struct Cli {
     /// a flag to use the 1000 most common ports instead of a range
     #[arg(short, long)]
     pub common_ports: bool,
+
+    #[arg(short, long)]
+    pub verbose: bool,
 }
 
 fn port_in_range(s: &str) -> Result<(u16, u16), String> {

@@ -56,7 +56,7 @@ async fn scan_ports() {
     let v: Vec<u16> = (0..=65535).collect();
     let mut port_scanner = PortScanner::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
 
-    port_scanner.scan_ports(black_box(v)).await;
+    port_scanner.scan_ports(black_box(v), None).await;
 }
 
 criterion_group! {name=benches; config=Criterion::default().sample_size(10).with_profiler(FlamegraphProfiler::new(100)); targets=criterion_benchmark}

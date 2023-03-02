@@ -21,21 +21,25 @@ impl PortScanner {
         }
     }
 
-    pub async fn check_port_open(&self, port_num: u16) -> bool {
+    pub async fn check_port_open(&self, port_num: u16, cli: Option<&Cli>) -> bool {
         let socket_address = SocketAddr::new(self.addr, port_num);
 
         match TcpStream::connect(socket_address).await {
             Ok(_) => {
-                println!("port {} open!", port_num);
+                if let Some(c) = cli {
+                    if c.verbose {
+                        println!("port {} open!", port_num);
+                    }
+                }
                 true
             }
             Err(_) => false,
         }
     }
 
-    pub async fn scan_ports(&mut self, ports: Vec<u16>) {
+    pub async fn scan_ports(&mut self, ports: Vec<u16>, cli: Option<&Cli>) {
         for x in ports {
-            if self.check_port_open(x).await {
+            if self.check_port_open(x, cli).await {
                 self.port_map.insert(x, true);
             } else {
                 self.port_map.insert(x, false);
