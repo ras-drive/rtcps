@@ -7,10 +7,10 @@ pub const PORT_RANGE: RangeInclusive<u16> = 1..=65535;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
-    /// Addr to scan
+    /// ip address to scan ex: 127.0.0.1
     pub addr: IpAddr,
 
-    /// Ports to scan supplied with a hyphen between them
+    /// ports to scan supplied with a hyphen between them
     #[arg(value_parser = port_in_range)]
     pub ports: Option<(u16, u16)>,
 
@@ -18,6 +18,7 @@ pub struct Cli {
     #[arg(short, long)]
     pub common_ports: bool,
 
+    /// when used prints each port that is open as it is found
     #[arg(short, long)]
     pub verbose: bool,
 }
