@@ -25,6 +25,8 @@ Then it can be started by running
 cargo run -- [ip_address_to_scan]
 ```
 
+The supplied IP address can be either Ipv4 or Ipv6
+
 By default if only an IP address was supplied it will attempt to scan
 all of the ports. You can supply a range of ports to scan like so.
 

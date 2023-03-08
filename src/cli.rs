@@ -4,6 +4,7 @@ use std::ops::RangeInclusive;
 
 pub const PORT_RANGE: RangeInclusive<u16> = 1..=65535;
 
+/// A Clap parser struct that really only *needs* an IP address
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
@@ -22,6 +23,19 @@ pub struct Cli {
     #[arg(short, long)]
     pub verbose: bool,
 }
+
+///
+/// A Clap parser function for returning port tuples from hyphen separated strings
+///
+/// # Arguments
+///
+/// * `s` - string slice to split
+///
+/// # Example Inputs
+///
+/// * `1-65535` - scans all ports
+/// * `1-1000` - scans the first 1000 ports
+///
 
 fn port_in_range(s: &str) -> Result<(u16, u16), String> {
     if s.split_once('-').is_none() {
