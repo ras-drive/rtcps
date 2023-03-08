@@ -22,6 +22,14 @@ pub struct Cli {
     /// when used prints each port that is open as it is found
     #[arg(short, long)]
     pub verbose: bool,
+
+    /// scans ports sequentially without randomizing list
+    #[arg(short, long)]
+    pub sequential: bool,
+
+    /// outputs only port numbers for greppable output
+    #[arg(short, long)]
+    pub greppable: bool,
 }
 
 ///

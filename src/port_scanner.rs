@@ -42,7 +42,7 @@ impl PortScanner {
     ///
     /// Really is only called internally except for in a unit test
     /// returns true if the port number supplied is open when checked.
-    /// Optionally takes a Cli in order to test for the verbose flag.
+    /// Optionally takes a Cli in order to test for flags.
     ///
     /// # Arguments
     ///
@@ -69,6 +69,10 @@ impl PortScanner {
                 if let Some(c) = cli {
                     if c.verbose {
                         println!("port {} open!", port_num);
+                    }
+
+                    if c.greppable {
+                        println!("{}", port_num);
                     }
                 }
                 true

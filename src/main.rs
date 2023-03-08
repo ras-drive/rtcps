@@ -38,12 +38,16 @@ async fn main() {
     };
 
     // shuffles port numbers so firewalls blocking sequential port reads shouldn't be an issue
-    ports.shuffle(&mut thread_rng());
+    if !cli.sequential {
+        ports.shuffle(&mut thread_rng());
+    }
 
     smol::block_on(async { port_scanner.scan_ports(&ports, Some(&cli)).await });
 
-    println!(
-        "{} open ports found!",
-        count_open_ports(&port_scanner.port_map)
-    );
+    if !cli.greppable {
+        println!(
+            "{} open ports found!",
+            count_open_ports(&port_scanner.port_map)
+        );
+    }
 }
