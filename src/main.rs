@@ -21,22 +21,21 @@ async fn main() {
     // sets ports to supplied ones or defaults to all
     let (start_port, end_port) = cli.ports.unwrap_or((0, 65535));
 
-    // match function for loading the 1000 most common ports
-    let mut ports: Vec<u16> = match cli.common_ports {
-        true => {
-            let mut v = vec![];
+    // checks for flag to use 1000 most common ports instead
+    let mut ports: Vec<u16> = if cli.common_ports {
+        let mut v = vec![];
 
-            let str = std::fs::read_to_string(COMMON_PORTS_PATH).expect("common ports file path");
+        let str = std::fs::read_to_string(COMMON_PORTS_PATH).expect("common ports file path");
 
-            for i in str.split(",\n") {
-                if i.parse::<u16>().is_ok() {
-                    v.push(i.parse().unwrap());
-                }
+        for i in str.split(",\n") {
+            if i.parse::<u16>().is_ok() {
+                v.push(i.parse().unwrap());
             }
-
-            v
         }
-        false => (start_port..=end_port).collect(),
+
+        v
+    } else {
+        (start_port..=end_port).collect()
     };
 
     // shuffles port numbers so firewalls blocking sequential port reads shouldn't be an issue

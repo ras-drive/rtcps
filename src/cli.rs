@@ -12,11 +12,11 @@ pub struct Cli {
     pub addr: IpAddr,
 
     /// ports to scan supplied with a hyphen between them
-    #[arg(value_parser = port_in_range)]
+    #[arg(value_parser = port_in_range, conflicts_with("common_ports"))]
     pub ports: Option<(u16, u16)>,
 
     /// a flag to use the 1000 most common ports instead of a range
-    #[arg(short, long)]
+    #[arg(short, long, conflicts_with("ports"))]
     pub common_ports: bool,
 
     /// when used prints each port that is open as it is found

@@ -21,7 +21,7 @@ impl PortScanner {
     ///
     /// # Arguments
     ///
-    /// * `address` - An IpAddr to scan
+    /// * `address` - An `IpAddr` to scan
     ///
     /// # Examples
     ///
@@ -68,11 +68,11 @@ impl PortScanner {
             Ok(_) => {
                 if let Some(c) = cli {
                     if c.verbose {
-                        println!("port {} open!", port_num);
+                        println!("port {port_num} open!");
                     }
 
                     if c.greppable {
-                        println!("{}", port_num);
+                        println!("{port_num}");
                     }
                 }
                 true
@@ -82,7 +82,7 @@ impl PortScanner {
     }
 
     ///
-    /// Performs a port scan and mutates the structs inner port_map
+    /// Performs a port scan and mutates the structs inner `port_map`
     ///
     /// # Arguments
     ///
@@ -125,7 +125,7 @@ impl Default for PortScanner {
     fn default() -> Self {
         Self {
             addr: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
-            port_map: Default::default(),
+            port_map: Arc::default(),
         }
     }
 }
