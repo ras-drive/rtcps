@@ -20,7 +20,7 @@ pub struct Cli {
     pub common_ports: bool,
 
     /// when used prints each port that is open as it is found
-    #[arg(short, long)]
+    #[arg(short, long, conflicts_with("greppable"))]
     pub verbose: bool,
 
     /// scans ports sequentially without randomizing list
@@ -28,7 +28,7 @@ pub struct Cli {
     pub sequential: bool,
 
     /// outputs only port numbers for greppable output
-    #[arg(short, long)]
+    #[arg(short, long, conflicts_with("verbose"))]
     pub greppable: bool,
 }
 

@@ -11,7 +11,9 @@ use rusty_port_scanner::COMMON_PORTS_PATH;
 async fn main() {
     let cli = Cli::parse();
 
-    println!("Scanning on addr {}", cli.addr);
+    if !cli.greppable {
+        println!("Scanning on addr {}", cli.addr);
+    }
 
     // let mut hashmap = HashMap::new();
     let mut port_scanner = PortScanner::from(&cli);
