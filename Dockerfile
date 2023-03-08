@@ -1,4 +1,4 @@
-FROM rust:alpine
+FROM rust
 
 WORKDIR /usr/src/app
 COPY src src
