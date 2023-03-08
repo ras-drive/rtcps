@@ -1,6 +1,9 @@
-FROM rust
+FROM rust:alpine
 
 WORKDIR /usr/src/app
-COPY . .
+COPY src src
+COPY tests tests
+COPY benches benches
+COPY Cargo.toml Cargo.lock ./
 
 ENTRYPOINT cargo test
