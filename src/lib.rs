@@ -19,9 +19,9 @@ impl Asset {
     ///
     /// # Example
     /// ```
-    /// use rtcps::get_common_ports_string;
+    /// use rtcps::Asset;
     ///
-    /// let str = get_common_ports_string().expect("common ports file contents");
+    /// let str = Asset::get_common_ports_string().expect("common ports file contents");
     ///  for port in str.split(",\n") {
     ///        if port.parse::<u16>().is_ok() {
     ///             println!("{port}");
