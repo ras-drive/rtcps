@@ -1,11 +1,10 @@
 use clap::Parser;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rtcps::count_open_ports;
+use rtcps::{count_open_ports, Asset};
 
 use rtcps::cli::Cli;
 use rtcps::port_scanner::PortScanner;
-use rtcps::COMMON_PORTS_PATH;
 
 #[tokio::main]
 async fn main() {
@@ -25,7 +24,7 @@ async fn main() {
     let mut ports: Vec<u16> = if cli.common_ports {
         let mut v = vec![];
 
-        let str = std::fs::read_to_string(COMMON_PORTS_PATH).expect("common ports file path");
+        let str = Asset::get_common_ports_string().expect("common ports file contents");
 
         for i in str.split(",\n") {
             if i.parse::<u16>().is_ok() {
