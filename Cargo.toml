@@ -6,7 +6,8 @@ license = "MIT OR Apache-2.0"
 version = "1.0.0"
 readme = "README.md"
 repository = "https://github.com/ras-drive/rtcps/"
-keywords = ["command-line-utilities"]
+keywords = ["port", "scanning", "nmap"]
+categories = ["command-line-utilities"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
