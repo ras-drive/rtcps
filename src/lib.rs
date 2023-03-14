@@ -2,41 +2,40 @@ pub mod cli;
 pub mod port_scanner;
 
 use dashmap::DashMap;
-use expanduser::expanduser;
-use std::{path::Path, sync::Arc};
+use rust_embed::RustEmbed;
+use std::sync::Arc;
 
-const COMMON_PORTS_PATH: &str = "~/.local/share/rtcps/common_ports.csv";
+#[derive(RustEmbed)]
+#[folder = "./"]
+#[include = "*.csv"]
+///
+/// A struct meant really only to grab the list of common ports that get embedded during compilation
+///
+pub struct Asset;
 
-///
-/// Returns contents of common ports file from either installed location or current directory if the program isn't installed
-///
-/// # Example
-/// ```
-/// use rtcps::get_common_ports_string;
-///
-/// let str = get_common_ports_string().expect("common ports file contents");
-///  for port in str.split(",\n") {
-///        if port.parse::<u16>().is_ok() {
-///             println!("{port}");
-///         }
-///     }
-/// ```
-///
-pub fn get_common_ports_string() -> Result<String, std::io::Error> {
-    let mut path = expanduser(COMMON_PORTS_PATH)?;
+impl Asset {
+    ///
+    /// Returns contents of common ports file from common ports csv file that gets embedded during compilation
+    ///
+    /// # Example
+    /// ```
+    /// use rtcps::get_common_ports_string;
+    ///
+    /// let str = get_common_ports_string().expect("common ports file contents");
+    ///  for port in str.split(",\n") {
+    ///        if port.parse::<u16>().is_ok() {
+    ///             println!("{port}");
+    ///         }
+    ///     }
+    /// ```
+    ///
+    pub fn get_common_ports_string() -> Result<String, std::io::Error> {
+        let file = Asset::get("common_ports.csv").unwrap();
 
-    if Path::new("common_ports.csv").exists() || !path.exists() {
-        if !Path::new("common_ports.csv").exists() {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::NotFound,
-                "common_ports.csv file expected",
-            ));
-        }
-
-        path = Path::new("common_ports.csv").to_path_buf();
+        Ok(std::str::from_utf8(&file.data)
+            .expect("common ports contents")
+            .to_string())
     }
-
-    std::fs::read_to_string(path)
 }
 
 ///
