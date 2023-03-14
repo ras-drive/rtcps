@@ -30,7 +30,7 @@ impl Asset {
     /// ```
     ///
     pub fn get_common_ports_string() -> Result<String, std::io::Error> {
-        let file = Asset::get("common_ports.csv").unwrap();
+        let file = Asset::get("common_ports.csv").expect("common ports file");
 
         Ok(std::str::from_utf8(&file.data)
             .expect("common ports contents")
