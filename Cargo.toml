@@ -1,5 +1,6 @@
 [package]
-name = "rusty_port_scanner"
+name = "rtcps"
+description = "Rust TCP Scanner"
 version = "0.1.0"
 keywords = ["port", "scanning", "nmap"]
 edition = "2021"
@@ -28,7 +29,7 @@ hyper = { version = "0.14", features = ["server", "tcp", "http2"] }
 bench = false
 
 [[bin]]
-name = "rusty_port_scanner"
+name = "rtcps"
 bench = false
 
 [[bench]]

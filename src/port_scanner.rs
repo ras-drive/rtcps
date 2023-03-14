@@ -26,7 +26,7 @@ impl PortScanner {
     /// # Examples
     ///
     /// ```
-    /// use rusty_port_scanner::port_scanner::PortScanner;
+    /// use rtcps::port_scanner::PortScanner;
     /// use std::net::{IpAddr, Ipv4Addr};
     ///
     /// let port_scanner = PortScanner::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
@@ -55,7 +55,7 @@ impl PortScanner {
     /// (Postgres servers are usually bound to port 5432)
     ///
     /// ```
-    /// use rusty_port_scanner::port_scanner::PortScanner;
+    /// use rtcps::port_scanner::PortScanner;
     ///
     /// let port_scanner = PortScanner::default();
     /// let postgres_is_open = port_scanner.check_port_open(&5432, None);
@@ -92,7 +92,7 @@ impl PortScanner {
     /// # Examples
     ///
     /// ```
-    /// use rusty_port_scanner::port_scanner::PortScanner;
+    /// use rtcps::port_scanner::PortScanner;
     ///
     /// let ports: Vec<u16> = (0..=65535).collect();
     /// let mut port_scanner = PortScanner::default();
@@ -117,7 +117,7 @@ impl Default for PortScanner {
     /// # Examples
     ///
     /// ```
-    /// use rusty_port_scanner::port_scanner::PortScanner;
+    /// use rtcps::port_scanner::PortScanner;
     ///
     /// let port_scanner = PortScanner::default();
     /// ```
@@ -141,7 +141,7 @@ impl From<&Cli> for PortScanner {
     /// # Examples
     ///
     /// ```
-    /// use rusty_port_scanner::{port_scanner::PortScanner, cli::Cli};
+    /// use rtcps::{port_scanner::PortScanner, cli::Cli};
     /// use clap::Parser;
     ///
     /// let cli = Cli::parse_from(["", "127.0.0.1"]);

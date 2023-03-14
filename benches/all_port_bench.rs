@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, profiler::Profiler, Criterion};
 use pprof::ProfilerGuard;
-use rusty_port_scanner::port_scanner::PortScanner;
+use rtcps::port_scanner::PortScanner;
 use std::{
     ffi::c_int,
     fs::File,

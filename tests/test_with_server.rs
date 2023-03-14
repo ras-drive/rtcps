@@ -1,6 +1,6 @@
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
-use rusty_port_scanner::port_scanner::PortScanner;
+use rtcps::port_scanner::PortScanner;
 use std::convert::Infallible;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::thread::sleep;

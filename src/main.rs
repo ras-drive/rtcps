@@ -1,11 +1,11 @@
 use clap::Parser;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rusty_port_scanner::count_open_ports;
+use rtcps::count_open_ports;
 
-use rusty_port_scanner::cli::Cli;
-use rusty_port_scanner::port_scanner::PortScanner;
-use rusty_port_scanner::COMMON_PORTS_PATH;
+use rtcps::cli::Cli;
+use rtcps::port_scanner::PortScanner;
+use rtcps::COMMON_PORTS_PATH;
 
 #[tokio::main]
 async fn main() {

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use dashmap::DashMap;
-use rusty_port_scanner::{cli::PORT_RANGE, count_open_ports};
+use rtcps::{cli::PORT_RANGE, count_open_ports};
 
 #[test]
 fn test_port_count() {

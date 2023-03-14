@@ -12,7 +12,7 @@ pub const COMMON_PORTS_PATH: &str = "common_ports.csv";
 ///
 /// # Example
 /// ```
-/// use rusty_port_scanner::{count_open_ports, port_scanner::PortScanner};
+/// use rtcps::{count_open_ports, port_scanner::PortScanner};
 ///
 /// let port_scanner = PortScanner::default();
 /// println!("{}", count_open_ports(&port_scanner.port_map));

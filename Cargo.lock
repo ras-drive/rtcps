@@ -1197,6 +1197,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "rtcps"
+version = "0.1.0"
+dependencies = [
+ "clap 4.1.6",
+ "criterion",
+ "dashmap",
+ "hyper",
+ "pprof",
+ "rand",
+ "smol",
+ "tokio",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1214,20 +1228,6 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys 0.45.0",
-]
-
-[[package]]
-name = "rusty_port_scanner"
-version = "0.1.0"
-dependencies = [
- "clap 4.1.6",
- "criterion",
- "dashmap",
- "hyper",
- "pprof",
- "rand",
- "smol",
- "tokio",
 ]
 
 [[package]]
