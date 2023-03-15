@@ -3,7 +3,7 @@ name = "rtcps"
 authors = ["Sarah Petkovic"]
 description = "Rust TCP Scanner"
 license = "MIT OR Apache-2.0"
-version = "1.0.0"
+version = "1.0.1"
 readme = "README.md"
 repository = "https://github.com/ras-drive/rtcps/"
 keywords = ["port", "scanning", "nmap"]
@@ -19,7 +19,7 @@ smol = "1.3"
 
 [dependencies.rust-embed]
 version = "6.6"
-features = ["include-exclude"]
+features = ["include-exclude", "debug-embed", "compression"]
 
 [dependencies.tokio]
 version = "1"

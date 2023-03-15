@@ -27,7 +27,7 @@ async fn start_server() {
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_scanner_with_server() {
     tokio::spawn(start_server());
-    sleep(Duration::from_secs(3));
+    sleep(Duration::from_secs(5));
 
     let port_scanner = PortScanner::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     assert!(port_scanner.check_port_open(&PORT, None).await);

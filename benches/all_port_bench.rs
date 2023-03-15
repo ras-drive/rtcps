@@ -1,12 +1,8 @@
+use clap::Parser;
 use criterion::{black_box, criterion_group, criterion_main, profiler::Profiler, Criterion};
 use pprof::ProfilerGuard;
-use rtcps::port_scanner::PortScanner;
-use std::{
-    ffi::c_int,
-    fs::File,
-    net::{IpAddr, Ipv4Addr},
-    path::Path,
-};
+use rtcps::{cli::Cli, run};
+use std::{ffi::c_int, fs::File, path::Path};
 
 pub struct FlamegraphProfiler<'a> {
     frequency: c_int,
@@ -53,10 +49,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 
 #[inline(always)]
 async fn scan_ports() {
-    let v: Vec<u16> = (0..=65535).collect();
-    let mut port_scanner = PortScanner::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
-
-    port_scanner.scan_ports(black_box(&v), None).await;
+    run(black_box(Some(Cli::parse_from(["", "127.0.0.1"])))).await;
 }
 
 criterion_group! {name=benches; config=Criterion::default().sample_size(10).with_profiler(FlamegraphProfiler::new(100)); targets=criterion_benchmark}
