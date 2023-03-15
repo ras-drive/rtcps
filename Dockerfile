@@ -1,6 +1,7 @@
 FROM rust
 
 WORKDIR /usr/src/app
+COPY .cargo/ .cargo/
 COPY src src
 COPY tests tests
 COPY benches benches
