@@ -10,6 +10,23 @@ The common ports collection was acquired by running the following command
 awk '$2~/tcp$/' /usr/share/nmap/nmap-services | sort -r -k3 | head -n 1000 | tr -s ' ' | cut -d '/' -f1 | sed 's/\S*\s*\(\S*\).*/\1,/'
 ```
 
+## How to install the app
+
+To install this app with cargo installed just run
+
+```bash
+cargo install rtcps
+```
+
+If you are on a Debian based system and want to install the binary
+through your package manager you can download the provided .deb file
+
+If you would like to build a binary from source you can run ```release.py```
+
+| Available Binary Releases |
+|---------------------------|
+|           Debian          |
+
 ## How to use the app
 
 You can build the app with Cargo installed by running the following
