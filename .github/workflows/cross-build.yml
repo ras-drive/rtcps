@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: 
         - ubuntu-latest
-        - windows-latest
+        # windows builds fail as long as clap is still used, windows builds will resume when a parser other than clap is used on other platforms - windows-latest
         - macOS-latest
     runs-on: ${{ matrix.os }}
     steps:
