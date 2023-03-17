@@ -11,13 +11,9 @@ except:
 try: 
     subprocess.run(["cargo", "deb", "--version"])
 except: 
-    print("Cargo deb not found, it can be found at https://github.com/kornelski/cargo-deb")
-    exit(1)
-
-
+    print("Cargo deb not found, it can be found at https://github.com/kornelski/cargo-deb\n Skipping deb build")
 
 # run debian build
 subprocess.run(["cargo", "deb", "-o", "target"])
-
 
 exit(0)

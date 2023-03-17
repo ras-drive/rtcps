@@ -72,6 +72,12 @@ If you want to generate a flamegraph run
 cargo bench --bench all_port_bench -- --profile-time=5
 ```
 
+### Unsupported targets
+
+Currently Linux musl support is lacking and it won't compile due to clap's
+derive feature not being supported on musl. An alternative cli struct is
+being planned for use on musl system.
+
 ### Licensing
 
 This app is Licensed under the MIT/Apache 2.0 License
