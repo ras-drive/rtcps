@@ -4,43 +4,33 @@ pub mod port_scanner;
 use clap::Parser;
 use dashmap::DashMap;
 use rand::{seq::SliceRandom, thread_rng};
-use rust_embed::RustEmbed;
 use std::sync::Arc;
 
 use cli::Cli;
 use port_scanner::PortScanner;
 
-#[derive(RustEmbed)]
-#[folder = "./"]
-#[include = "*.csv"]
 ///
-/// A struct meant really only to grab the list of common ports that get embedded during compilation
+/// Returns contents of common ports file from common ports csv file that gets embedded during compilation
 ///
-pub struct Asset;
+/// # Example
+/// ```
+/// use rtcps::get_common_ports_string;
+///
+/// let str = get_common_ports_string().expect("common ports file contents");
+///  for port in str.split(",\n") {
+///        if port.parse::<u16>().is_ok() {
+///             println!("{port}");
+///         }
+///     }
+/// ```
+///
+pub fn get_common_ports_string() -> Result<String, std::io::Error> {
+    // let file = Asset::get("common_ports.csv").expect("common ports file");
+    let file = include_bytes!("../common_ports.csv");
 
-impl Asset {
-    ///
-    /// Returns contents of common ports file from common ports csv file that gets embedded during compilation
-    ///
-    /// # Example
-    /// ```
-    /// use rtcps::Asset;
-    ///
-    /// let str = Asset::get_common_ports_string().expect("common ports file contents");
-    ///  for port in str.split(",\n") {
-    ///        if port.parse::<u16>().is_ok() {
-    ///             println!("{port}");
-    ///         }
-    ///     }
-    /// ```
-    ///
-    pub fn get_common_ports_string() -> Result<String, std::io::Error> {
-        let file = Asset::get("common_ports.csv").expect("common ports file");
-
-        Ok(std::str::from_utf8(&file.data)
-            .expect("common ports contents")
-            .to_string())
-    }
+    Ok(std::str::from_utf8(file)
+        .expect("common ports contents")
+        .to_string())
 }
 
 ///
@@ -103,7 +93,7 @@ pub async fn run(cli_option: Option<Cli>) {
     let mut ports: Vec<u16> = if cli.common_ports {
         let mut v = vec![];
 
-        let str = Asset::get_common_ports_string().expect("common ports file contents");
+        let str = get_common_ports_string().expect("common ports file contents");
 
         for i in str.split(",\n") {
             if i.parse::<u16>().is_ok() {
