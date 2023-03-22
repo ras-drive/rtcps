@@ -32,6 +32,12 @@ pub struct Cli {
     pub greppable: bool,
 }
 
+impl Cli {
+    pub fn get_ports(&self) -> (u16, u16) {
+        self.ports.unwrap_or((0, 65535))
+    }
+}
+
 ///
 /// A Clap parser function for returning port tuples from hyphen separated strings
 ///

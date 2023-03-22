@@ -149,9 +149,12 @@ impl From<&Cli> for PortScanner {
     /// ```
     ///
     fn from(cli: &Cli) -> Self {
+        // cli.get_ports.1 will always be higher than cli.get_ports.0 because the parser rejects ranges with a higher starting number
+        let cap = cli.get_ports().1 - cli.get_ports().0;
+
         Self {
             addr: cli.addr,
-            port_map: Arc::new(DashMap::new()),
+            port_map: Arc::new(DashMap::with_capacity(cap as usize)),
         }
     }
 }

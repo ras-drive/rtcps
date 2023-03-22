@@ -9,6 +9,20 @@ use std::sync::Arc;
 use cli::Cli;
 use port_scanner::PortScanner;
 
+#[cfg(windows)]
+macro_rules! PATH_SEPARATOR {
+    () => {
+        r"\"
+    };
+}
+
+#[cfg(unix)]
+macro_rules! PATH_SEPARATOR {
+    () => {
+        r"/"
+    };
+}
+
 ///
 /// Returns contents of common ports file from common ports csv file that gets embedded during compilation
 ///
@@ -24,13 +38,15 @@ use port_scanner::PortScanner;
 ///     }
 /// ```
 ///
-pub fn get_common_ports_string() -> Result<String, std::io::Error> {
+pub fn get_common_ports_string() -> Result<String, std::str::Utf8Error> {
     // let file = Asset::get("common_ports.csv").expect("common ports file");
-    let file = include_bytes!("../common_ports.csv");
+    let file = include_bytes!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        PATH_SEPARATOR!(),
+        "common_ports.csv"
+    ));
 
-    Ok(std::str::from_utf8(file)
-        .expect("common ports contents")
-        .to_string())
+    Ok(std::str::from_utf8(file)?.to_string())
 }
 
 ///
@@ -87,7 +103,7 @@ pub async fn run(cli_option: Option<Cli>) {
     let mut port_scanner = PortScanner::from(&cli);
 
     // sets ports to supplied ones or defaults to all
-    let (start_port, end_port) = cli.ports.unwrap_or((0, 65535));
+    let (start_port, end_port) = cli.get_ports();
 
     // checks for flag to use 1000 most common ports instead
     let mut ports: Vec<u16> = if cli.common_ports {
