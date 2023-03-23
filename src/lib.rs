@@ -39,7 +39,6 @@ macro_rules! PATH_SEPARATOR {
 /// ```
 ///
 pub fn get_common_ports_string() -> Result<String, std::str::Utf8Error> {
-    // let file = Asset::get("common_ports.csv").expect("common ports file");
     let file = include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         PATH_SEPARATOR!(),
@@ -109,7 +108,15 @@ pub async fn run(cli_option: Option<Cli>) {
     let mut ports: Vec<u16> = if cli.common_ports {
         let mut v = vec![];
 
-        let str = get_common_ports_string().expect("common ports file contents");
+        let str = match get_common_ports_string() {
+            Ok(s) => s,
+            Err(e) => {
+                log::error!(
+                    "error reading common ports list that gets embedded during compilation {e}"
+                );
+                String::new()
+            }
+        };
 
         for i in str.split(",\n") {
             if i.parse::<u16>().is_ok() {
