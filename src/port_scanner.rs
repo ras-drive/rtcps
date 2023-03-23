@@ -68,11 +68,11 @@ impl PortScanner {
             Ok(_) => {
                 if let Some(c) = cli {
                     if c.verbose {
-                        println!("port {port_num} open!");
+                        log::info!("port {port_num} open!");
                     }
 
                     if c.greppable {
-                        println!("{port_num}");
+                        log::info!("{port_num}");
                     }
                 }
                 true

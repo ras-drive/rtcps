@@ -1,9 +1,13 @@
 pub mod cli;
 pub mod port_scanner;
 
+use chrono::Local;
 use clap::Parser;
 use dashmap::DashMap;
+use env_logger::Builder;
+use log::{Level, LevelFilter};
 use rand::{seq::SliceRandom, thread_rng};
+use std::io::Write;
 use std::sync::Arc;
 
 use cli::Cli;
@@ -48,6 +52,26 @@ pub fn get_common_ports_string() -> Result<String, std::str::Utf8Error> {
     Ok(std::str::from_utf8(file)?.to_string())
 }
 
+pub fn init_logger() {
+    Builder::new()
+        .format(|buf, record| {
+            if record.level().eq(&Level::Info) {
+                writeln!(buf, "{}", record.args())
+            } else {
+                writeln!(
+                    buf,
+                    "{} {}: {}",
+                    record.level(),
+                    //Format like you want to: <-----------------
+                    Local::now().format("%Y-%m-%d %H:%M:%S%.3f"),
+                    record.args()
+                )
+            }
+        })
+        .filter(None, LevelFilter::Info)
+        .init();
+}
+
 ///
 /// Takes an `Arc` `DashMap` reference holding a `port_map` and returns the open ports.
 ///
@@ -88,6 +112,8 @@ pub fn count_open_ports(hashmap: &Arc<DashMap<u16, bool>>) -> u16 {
 /// ```
 ///
 pub async fn run(cli_option: Option<Cli>) {
+    init_logger();
+
     let cli = if cli_option.is_some() {
         cli_option.unwrap()
     } else {
@@ -95,7 +121,7 @@ pub async fn run(cli_option: Option<Cli>) {
     };
 
     if !cli.greppable {
-        println!("Scanning on addr {}", cli.addr);
+        log::info!("Scanning on addr {}", cli.addr);
     }
 
     // let mut hashmap = HashMap::new();
@@ -137,7 +163,7 @@ pub async fn run(cli_option: Option<Cli>) {
     smol::block_on(async { port_scanner.scan_ports(&ports, Some(&cli)).await });
 
     if !cli.greppable {
-        println!(
+        log::info!(
             "{} open ports found!",
             count_open_ports(&port_scanner.port_map)
         );

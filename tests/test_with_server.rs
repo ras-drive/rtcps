@@ -1,5 +1,6 @@
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
+use rtcps::init_logger;
 use rtcps::port_scanner::PortScanner;
 use std::convert::Infallible;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
@@ -13,6 +14,7 @@ async fn handle(_req: Request<Body>) -> Result<Response<Body>, Infallible> {
 }
 
 async fn start_server() {
+    init_logger();
     let addr = SocketAddr::from(([127, 0, 0, 1], PORT));
 
     let make_service = make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(handle)) });
@@ -20,7 +22,7 @@ async fn start_server() {
     let server = Server::bind(&addr).serve(make_service);
 
     if let Err(e) = server.await {
-        eprintln!("server error: {}", e);
+        log::error!("server error: {}", e);
     }
 }
 
